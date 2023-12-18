@@ -54,6 +54,11 @@ namespace VContainer.Unity
             return containerBuilder.RegisterComponent(component);
         }
 
+        public RegistrationBuilder AddInstanceUntyped(MonoBehaviour component)
+        {
+            return containerBuilder.RegisterComponentUntyped(component);
+        }
+
         public ComponentRegistrationBuilder AddInHierarchy<T>()
             => containerBuilder.RegisterComponentInHierarchy<T>()
                 .UnderTransform(parentTransform);
