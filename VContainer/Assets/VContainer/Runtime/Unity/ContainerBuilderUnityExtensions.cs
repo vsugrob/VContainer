@@ -121,6 +121,15 @@ namespace VContainer.Unity
             return builder.Register(registrationBuilder);
         }
 
+        public static RegistrationBuilder RegisterComponentUntyped(this IContainerBuilder builder, MonoBehaviour component)
+        {
+            var type = component.GetType();
+            var registrationBuilder = new ComponentRegistrationBuilder(component).As(type);
+            // Force inject execution
+            builder.RegisterBuildCallback(container => container.Resolve(type));
+            return builder.Register(registrationBuilder);
+        }
+
         public static ComponentRegistrationBuilder RegisterComponentInHierarchy<T>(this IContainerBuilder builder)
         {
             var lifetimeScope = (LifetimeScope)builder.ApplicationOrigin;
