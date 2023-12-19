@@ -17,7 +17,7 @@ namespace VContainer
         /// <remarks>
         /// This version of resolve looks for all of scopes
         /// </remarks>
-        object Resolve(Type type);
+        object Resolve(Type type, bool isOptional = false);
 
         /// <summary>
         /// Resolve from meta with registration
@@ -73,7 +73,14 @@ namespace VContainer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object Resolve(Type type) => Resolve(FindRegistration(type));
+        public object Resolve(Type type, bool isOptional = false)
+        {
+            var registration = FindRegistration(type, isOptional);
+            if (registration is null && isOptional)
+                return null;
+
+            return Resolve(registration);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Resolve(Registration registration)
@@ -150,7 +157,7 @@ namespace VContainer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal Registration FindRegistration(Type type)
+        internal Registration FindRegistration(Type type, bool isOptional)
         {
             IScopedObjectResolver scope = this;
             while (scope != null)
@@ -161,7 +168,11 @@ namespace VContainer
                 }
                 scope = scope.Parent;
             }
-            throw new VContainerException(type, $"No such registration of type: {type}");
+
+            if (isOptional)
+                return null;
+            else
+                throw new VContainerException(type, $"No such registration of type: {type}");
         }
     }
 
@@ -190,12 +201,13 @@ namespace VContainer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object Resolve(Type type)
+        public object Resolve(Type type, bool isOptional = false)
         {
             if (registry.TryGet(type, out var registration))
-            {
                 return Resolve(registration);
-            }
+            else if (isOptional)
+                return null;
+
             throw new VContainerException(type, $"No such registration of type: {type}");
         }
 

@@ -7,18 +7,21 @@ namespace VContainer
     public static class IObjectResolverExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T Resolve<T>(this IObjectResolver resolver) => (T)resolver.Resolve(typeof(T));
+        public static T Resolve<T>(this IObjectResolver resolver, bool isOptional = false) =>
+            (T)resolver.Resolve(typeof(T), isOptional);
 
         // Using from CodeGen
         [Preserve]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static object ResolveNonGeneric(this IObjectResolver resolve, Type type) => resolve.Resolve(type);
+        public static object ResolveNonGeneric(this IObjectResolver resolve, Type type, bool isOptional = false) =>
+            resolve.Resolve(type, isOptional);
 
         public static object ResolveOrParameter(
             this IObjectResolver resolver,
             Type parameterType,
             string parameterName,
-            IReadOnlyList<IInjectParameter> parameters)
+            IReadOnlyList<IInjectParameter> parameters,
+            bool isOptional = false)
         {
             if (parameters != null)
             {
@@ -32,7 +35,7 @@ namespace VContainer
                     }
                 }
             }
-            return resolver.Resolve(parameterType);
+            return resolver.Resolve(parameterType, isOptional);
         }
     }
 }
