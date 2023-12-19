@@ -54,7 +54,7 @@ namespace VContainer.Unity
             return containerBuilder.RegisterComponent(component);
         }
 
-        public RegistrationBuilder AddInstanceUntyped(MonoBehaviour component)
+        public RegistrationBuilder AddInstanceUntyped(Component component)
         {
             return containerBuilder.RegisterComponentUntyped(component);
         }
@@ -126,7 +126,7 @@ namespace VContainer.Unity
             return builder.Register(registrationBuilder);
         }
 
-        public static RegistrationBuilder RegisterComponentUntyped(this IContainerBuilder builder, MonoBehaviour component)
+        public static RegistrationBuilder RegisterComponentUntyped(this IContainerBuilder builder, Component component)
         {
             var type = component.GetType();
             var registrationBuilder = new ComponentRegistrationBuilder(component).As(type);
