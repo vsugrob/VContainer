@@ -49,6 +49,12 @@ namespace VContainer
             => builder.Register(new FuncRegistrationBuilder(implementationConfiguration, typeof(TInterface), lifetime));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static RegistrationBuilder RegisterInstanceUntyped(
+            this IContainerBuilder builder,
+            object instance)
+            => builder.Register(new InstanceRegistrationBuilder(instance)).As(instance.GetType());
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static RegistrationBuilder RegisterInstance<TInterface>(
             this IContainerBuilder builder,
             TInterface instance)
